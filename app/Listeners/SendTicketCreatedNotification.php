@@ -24,7 +24,7 @@ class SendTicketCreatedNotification
     public function handle(TicketCreated $event): void
     {
         Log::info("Listener SendTicketCreatedNotification : handeling event");
-        $admins = User::role('admin')->get();
+        $admins = User::where('role', 'admin')->get();
         Notification::send($admins, new TicketCreatedNotification($event->ticket));
         $event->ticket->user->notify(new TicketCreatedNotification($event->ticket, true));
     }

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\TicketResponseController;
@@ -27,6 +28,10 @@ Route::middleware('auth')->group(function () {
     Route::post('/tickets/{ticket}/responses', [TicketResponseController::class, 'store'])->name('tickets.responses.store');
     Route::put('/responses/{response}', [TicketResponseController::class, 'update'])->name('tickets.responses.update');
     Route::delete('/responses/{response}', [TicketResponseController::class, 'destroy'])->name('tickets.responses.destroy');
+
+    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+    Route::post('/notifications/mark-all-as-read', [NotificationController::class, 'markAllAsRead'])->name('notifications.mark-all-as-read');
+    Route::post('/notifications/mark-as-read/{notification}', [NotificationController::class, 'markAsRead'])->name('notifications.mark-as-read');
 });
 
 require __DIR__.'/auth.php';

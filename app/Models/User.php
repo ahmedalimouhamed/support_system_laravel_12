@@ -61,4 +61,19 @@ class User extends Authenticatable
     {
         return $this->role === 'user';
     }
+
+    public function hasRole($role): bool
+    {
+        return $this->role === $role;
+    }
+
+    public function hasAnyRole($roles): bool
+    {
+        return in_array($this->role, $roles);
+    }
+
+    public function tickets()
+    {
+        return $this->hasMany(Ticket::class);
+    }
 }

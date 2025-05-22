@@ -24,9 +24,12 @@ class SendTicketAssignedNotification
     {
         Log::info("Listener SendTicketAssignedNotification : handeling event");
         if($event->ticket->assigned_to){
-            $event->ticket->assignedTo->notify(
-                new TicketAssignedNotification($event->ticket)
-            );
+            $assignedTo = User::find($event->ticket->assigned_to);
+            if($assignedTo){
+                $assignedTo->notify(
+                    new TicketAssignedNotification($event->ticket)
+                );
+            }
         }
 
         if($event->previousAgentId){

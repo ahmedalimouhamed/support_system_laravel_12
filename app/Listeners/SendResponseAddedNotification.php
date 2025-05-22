@@ -4,7 +4,7 @@ namespace App\Listeners;
 
 use App\Events\ResponseAdded;
 use App\Models\User;
-use App\Notifications\ResponseAddedNotification;
+use App\Notifications\TicketResponseAddedNotification;
 use Illuminate\Support\Facades\Log;
 
 class SendResponseAddedNotification
@@ -33,7 +33,7 @@ class SendResponseAddedNotification
             ->filter(fn($id) => $id !== $responder->id);
 
         User::whereIn('id', $participations)->get()->each(function ($user) use ($response) {
-            $user->notify(new ResponseAddedNotification($response));
+            $user->notify(new TicketResponseAddedNotification($response));
         });
     }
 }

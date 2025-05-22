@@ -22,11 +22,11 @@ class TicketController extends Controller
     {
         $this->authorize('viewAny', Ticket::class);
 
-        $tickets = Ticket::with(['user', 'assignedTo', 'category'])
-            ->when(auth()->user()->hasRole('user'), function($query){
+        $tickets = Ticket::with(['user', 'category'])
+            ->when(auth()->user()->role === 'user', function($query){
                 return $query->where('user_id', auth()->id());
             })
-            ->when(auth()->user()->hasRole('agent'), function($query){
+            ->when(auth()->user()->role === 'agent', function($query){
                 return $query->where('assigned_to', auth()->id());
             })
             ->latest()
@@ -34,7 +34,7 @@ class TicketController extends Controller
             ->addResponseCount();
 
         return view('tickets.index', [
-            'tickets' => $tickets->groupByStatus()
+            'tickets' => $tickets
         ]);
     }
 
@@ -68,7 +68,7 @@ class TicketController extends Controller
         $this->authorize('view', $ticket);
 
         return view('tickets.show', [
-            'ticket' => $ticket->load(['responses.user', 'user', 'assignedTo', 'category']),
+            'ticket' => $ticket->load(['responses.user', 'user', 'category']),
             'canRespond' => auth()->user()->can('respond', $ticket)
         ]);
     }
@@ -82,7 +82,7 @@ class TicketController extends Controller
             'categories' => Category::all(),
             'priorities' => ['low', 'medium', 'high', 'critical'],
             'statuses' => ['open', 'in_progress', 'resolved', 'closed'],
-            'agents' => User::role('agent')->get()
+            'agents' => User::where('role', 'agent')->get()
         ]);
     }
 
